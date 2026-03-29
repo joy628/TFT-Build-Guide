@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "guides": {
+      "title": "Guide",
+      "description": "TFT/Golden Spatula strategy guides",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the guide"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content of the guide"
+        },
+        "heroName": {
+          "type": "string",
+          "description": "Name of the hero the guide is for"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords for the guide"
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "UID of the user who created the guide"
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Name of the user who created the guide"
+        },
+        "authorPhoto": {
+          "type": "string",
+          "description": "Photo URL of the user who created the guide"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the guide was created"
+        }
+      },
+      "required": ["title", "content", "heroName", "authorUid"]
+    },
+    "heroes": {
+      "title": "Hero",
+      "description": "TFT/Golden Spatula hero data",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the hero"
+        },
+        "season": {
+          "type": "string",
+          "description": "Season the hero belongs to"
+        },
+        "cost": {
+          "type": "number",
+          "description": "Cost of the hero"
+        },
+        "origin": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Origin traits"
+        },
+        "job": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Job traits"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "URL of the hero avatar"
+        }
+      },
+      "required": ["name", "season", "cost", "origin", "job", "avatar"]
+    }
+  },
+  "firestore": {
+    "/guides/{guideId}": {
+      "schema": "guides",
+      "description": "Collection of strategy guides"
+    },
+    "/heroes/{heroId}": {
+      "schema": "heroes",
+      "description": "Collection of hero data"
+    }
+  }
+}

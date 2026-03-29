@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: guides
+    // Document ID: auto-generated
+    // Fields:
+    //   - title: string (required, 1-100 chars)
+    //   - content: string (required, 1-5000 chars)
+    //   - heroName: string (required)
+    //   - tags: list (optional)
+    //   - authorUid: string (required, immutable)
+    //   - authorName: string (optional)
+    //   - authorPhoto: string (optional)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "sunjoy628@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidGuide(data) {
+      return data.keys().hasAll(['title', 'content', 'heroName', 'authorUid', 'createdAt']) &&
+             data.keys().hasOnly(['title', 'content', 'heroName', 'authorUid', 'authorName', 'authorPhoto', 'tags', 'createdAt']) &&
+             data.title is string && data.title.size() >= 1 && data.title.size() <= 100 &&
+             data.content is string && data.content.size() >= 1 && data.content.size() <= 5000 &&
+             data.heroName is string &&
+             data.authorUid is string &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /guides/{guideId} {
+      // Anyone can read guides
+      allow read: if true;
+
+      // Only authenticated users can create guides, and they must be the author
+      allow create: if isAuthenticated() && 
+                      isValidGuide(request.resource.data) && 
+                      request.resource.data.authorUid == request.auth.uid;
+
+      // Only owners or admins can update/delete guides
+      // authorUid and createdAt are immutable
+      allow update: if (isOwner(resource.data.authorUid) || isAdmin()) &&
+                      isValidGuide(request.resource.data) &&
+                      request.resource.data.authorUid == resource.data.authorUid &&
+                      request.resource.data.createdAt == resource.data.createdAt;
+
+      allow delete: if isOwner(resource.data.authorUid) || isAdmin();
+    }
+
+    match /heroes/{heroId} {
+      // Anyone can read hero data
+      allow read: if true;
+      // Only admins can modify hero data
+      allow write: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
