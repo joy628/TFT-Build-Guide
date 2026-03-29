@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-tft-bg: #0a0a0c;
-  --color-tft-card: #16161e;
-  --color-tft-accent: #c89b3c; /* Gold */
-  --color-tft-blue: #0070ba;
-  --color-tft-border: #323232;
+  --color-tft-bg: #F4F1E9; /* Egg Milk Coffee / Cream */
+  --color-tft-card: #AEC3B0; /* Sage Green */
+  --color-tft-accent: #688F4E; /* Muted Green */
+  --color-tft-blue: #8fa3a6; /* Dusty Blue */
+  --color-tft-border: #dcd7ca;
 }
 
 body {
   background-color: var(--color-tft-bg);
-  color: #e0e0e0;
+  color: #1a1a1a;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
@@ -36,12 +36,12 @@ body {
   background: linear-gradient(45deg, transparent, var(--color-tft-accent), transparent);
   z-index: -1;
   border-radius: inherit;
-  opacity: 0.3;
+  opacity: 0.2;
 }
 
 .glass-panel {
-  background: rgba(22, 22, 30, 0.8);
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(200, 155, 60, 0.2);
+  border: 1px solid rgba(104, 143, 78, 0.2);
 }
 

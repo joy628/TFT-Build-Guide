@@ -178,7 +178,9 @@ export default function App() {
             {Icon && <Icon size={12} className="text-tft-accent shrink-0" />}
             <div className="truncate">
               <p className="text-[8px] text-gray-500 uppercase font-bold leading-none mb-0.5">{label}</p>
-              <p className="text-[10px] font-bold text-white truncate">{selectedOption?.label || '全部'}</p>
+              <p className={`text-[10px] font-bold truncate ${selectedOption?.value === 'all' ? 'text-black' : 'text-gray-800'}`}>
+                {selectedOption?.label || '全部'}
+              </p>
             </div>
           </div>
           <ChevronDown size={12} className={`text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -201,8 +203,8 @@ export default function App() {
                       onChange(opt.value);
                       setIsOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-[10px] font-bold transition-colors hover:bg-white/5 ${
-                      value === opt.value ? 'text-tft-accent bg-tft-accent/5' : 'text-gray-400'
+                    className={`w-full flex items-center justify-between px-3 py-2 text-[10px] font-bold transition-colors hover:bg-black/5 ${
+                      value === opt.value ? 'text-tft-accent bg-tft-accent/10' : (opt.value === 'all' ? 'text-black' : 'text-gray-700')
                     }`}
                   >
                     {opt.label}
@@ -368,16 +370,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-tft-bg text-white pb-24 lg:pb-8">
+    <div className="min-h-screen bg-tft-bg text-gray-800 pb-24 lg:pb-8">
       {/* App Header */}
       <nav className="sticky top-0 z-50 glass-panel border-b border-tft-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Main Navigation Tabs */}
-          <div className="flex items-center gap-1 bg-tft-bg/50 p-1 rounded-xl border border-tft-border">
+          <div className="flex items-center gap-1 bg-white/50 p-1 rounded-xl border border-tft-border">
             <button
               onClick={() => setActiveTab('strategy')}
               className={`px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-2 ${
-                activeTab === 'strategy' ? 'bg-tft-accent text-black' : 'text-gray-400 hover:text-white'
+                activeTab === 'strategy' ? 'bg-tft-accent text-white' : 'text-gray-500 hover:text-tft-accent'
               }`}
             >
               <Sword size={14} /> 战术攻略
@@ -385,7 +387,7 @@ export default function App() {
             <button
               onClick={() => setActiveTab('analysis')}
               className={`px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-2 ${
-                activeTab === 'analysis' ? 'bg-tft-accent text-black' : 'text-gray-400 hover:text-white'
+                activeTab === 'analysis' ? 'bg-tft-accent text-white' : 'text-gray-500 hover:text-tft-accent'
               }`}
             >
               <Zap size={14} /> 英雄分析
@@ -401,8 +403,8 @@ export default function App() {
                   disabled={syncStatus === 'syncing'}
                   className={`text-[10px] px-2 py-1 rounded border transition-all mr-2 flex items-center gap-1 ${
                     syncStatus === 'syncing' ? 'bg-gray-700 text-gray-400 border-gray-600' :
-                    syncStatus === 'success' ? 'bg-green-500/20 text-green-500 border-green-500/30' :
-                    syncStatus === 'error' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
+                    syncStatus === 'success' ? 'bg-tft-blue/20 text-tft-blue border-tft-blue/30' :
+                    syncStatus === 'error' ? 'bg-tft-accent/20 text-tft-accent border-tft-accent/30' :
                     'bg-tft-accent/10 text-tft-accent border-tft-accent/20 hover:bg-tft-accent/20'
                   }`}
                 >
@@ -413,7 +415,7 @@ export default function App() {
                 </button>
               )}
               <img src={user.photoURL || ''} alt={user.displayName || ''} className="w-6 h-6 rounded-full border border-tft-accent/50" />
-              <button onClick={logout} className="text-[10px] text-gray-400 hover:text-white transition-colors flex items-center gap-1">
+              <button onClick={logout} className="text-[10px] text-gray-500 hover:text-tft-accent transition-colors flex items-center gap-1">
                 <LogOut size={12} /> 退出
               </button>
             </div>
@@ -522,12 +524,12 @@ export default function App() {
                     }}
                     className={`relative group aspect-square rounded-xl overflow-hidden border-2 transition-all ${
                       (activeTab === 'analysis' ? analyzingHeroName === hero.name : selectedHeroNames.includes(hero.name)) 
-                        ? 'border-tft-accent scale-105 shadow-[0_0_15px_rgba(200,155,60,0.5)]' 
+                        ? 'border-tft-accent scale-105 shadow-[0_0_15px_rgba(104,143,78,0.3)]' 
                         : 'border-tft-border grayscale hover:grayscale-0'
                     }`}
                   >
                     <img src={hero.avatar} alt={hero.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 py-0.5 text-[8px] font-bold text-center truncate px-1">
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 py-0.5 text-[8px] font-bold text-center truncate px-1 text-white">
                       {hero.name}
                     </div>
                     {activeTab === 'strategy' && selectedHeroNames.includes(hero.name) && (
@@ -541,7 +543,7 @@ export default function App() {
                       </div>
                     )}
                     <div className={`absolute top-0 right-0 w-4 h-4 flex items-center justify-center text-[8px] font-black rounded-bl-lg ${
-                      hero.cost === 5 ? 'bg-orange-500' : hero.cost === 4 ? 'bg-purple-500' : hero.cost === 3 ? 'bg-blue-500' : hero.cost === 2 ? 'bg-green-500' : 'bg-gray-500'
+                      hero.cost === 5 ? 'bg-[#d4c5b9] text-black' : hero.cost === 4 ? 'bg-[#a4b8c4] text-black' : hero.cost === 3 ? 'bg-[#8fa3a6] text-black' : hero.cost === 2 ? 'bg-[#688F4E] text-white' : 'bg-[#9e9e9e] text-white'
                     }`}>
                       {hero.cost}
                     </div>
@@ -558,7 +560,7 @@ export default function App() {
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       hero.cost === 5 ? 'bg-orange-500' : hero.cost === 4 ? 'bg-purple-500' : hero.cost === 3 ? 'bg-blue-500' : hero.cost === 2 ? 'bg-green-500' : 'bg-gray-400'
                     }`}></span>
-                    <span className="text-[10px] font-bold text-gray-300">{hero.name}</span>
+                    <span className="text-[10px] font-bold text-gray-700">{hero.name}</span>
                     <button 
                       onClick={() => setSelectedHeroNames(prev => prev.filter(n => n !== hero.name))}
                       className="text-gray-500 hover:text-red-400"
@@ -571,7 +573,7 @@ export default function App() {
                   <span className="text-[8px] text-tft-accent font-black uppercase tracking-widest">已选阵容 ({currentHeroes.length}/10)</span>
                   <button 
                     onClick={() => setSelectedHeroNames([])}
-                    className="text-[8px] text-gray-600 hover:text-white underline"
+                    className="text-[8px] text-gray-600 hover:text-tft-accent underline"
                   >
                     清空全部
                   </button>
@@ -766,7 +768,7 @@ export default function App() {
             <button
               onClick={handleFetchRecommendation}
               disabled={loading}
-              className="hidden lg:flex w-full bg-tft-accent hover:bg-yellow-600 disabled:bg-gray-700 text-black font-black py-5 rounded-2xl transition-all items-center justify-center gap-3 shadow-[0_10px_30px_rgba(200,155,60,0.3)] uppercase italic"
+              className="hidden lg:flex w-full bg-tft-accent hover:bg-[#5a7d43] disabled:bg-gray-700 text-white font-black py-5 rounded-2xl transition-all items-center justify-center gap-3 shadow-[0_10px_30px_rgba(104,143,78,0.2)] uppercase italic"
             >
               {loading ? <RefreshCw className="animate-spin" /> : <>计算神装方案 <ChevronRight size={20} /></>}
             </button>
@@ -819,7 +821,7 @@ export default function App() {
                     {/* Result Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-tft-accent rounded-xl flex items-center justify-center text-black font-black text-xl italic">
+                        <div className="w-12 h-12 bg-tft-accent rounded-xl flex items-center justify-center text-white font-black text-xl italic">
                           <Zap size={24} className="fill-current" />
                         </div>
                         <div>
@@ -862,9 +864,9 @@ export default function App() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-lg font-bold text-white group-hover:text-tft-accent transition-colors">{item.name}</h3>
+                              <h3 className="text-lg font-bold text-gray-800 group-hover:text-tft-accent transition-colors">{item.name}</h3>
                             </div>
-                            <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all">{item.reason}</p>
+                            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all">{item.reason}</p>
                           </div>
                         </motion.div>
                       ))}
@@ -876,15 +878,15 @@ export default function App() {
                         <h4 className="flex items-center gap-2 text-tft-blue font-black text-[10px] uppercase mb-4 tracking-widest">
                           <Info size={14} /> 战术核心思路
                         </h4>
-                        <p className="text-sm leading-relaxed text-blue-100/70 italic">
+                        <p className="text-sm leading-relaxed text-gray-600 italic">
                           "{result.strategy}"
                         </p>
                       </div>
-                      <div className="bg-red-900/5 border border-red-900/20 p-6 rounded-3xl">
-                        <h4 className="flex items-center gap-2 text-red-400 font-black text-[10px] uppercase mb-4 tracking-widest">
+                      <div className="bg-tft-accent/5 border border-tft-accent/20 p-6 rounded-3xl">
+                        <h4 className="flex items-center gap-2 text-tft-accent font-black text-[10px] uppercase mb-4 tracking-widest">
                           <Shield size={14} /> 针对性克制
                         </h4>
-                        <p className="text-sm leading-relaxed text-red-100/70">
+                        <p className="text-sm leading-relaxed text-gray-600">
                           {result.counter_tip}
                         </p>
                       </div>
@@ -934,7 +936,7 @@ export default function App() {
                   >
                     {/* Analysis Header */}
                     <div className="flex items-center gap-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-tft-accent shadow-[0_0_30px_rgba(200,155,60,0.3)]">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-tft-accent shadow-[0_0_30px_rgba(104,143,78,0.2)]">
                         <img 
                           src={allHeroes.find(h => h.name === analyzingHeroName)?.avatar} 
                           alt={analyzingHeroName || ''} 
@@ -944,8 +946,8 @@ export default function App() {
                       </div>
                       <div>
                         <div className="flex items-center gap-3 mb-1">
-                          <h2 className="text-3xl font-black italic uppercase tracking-tighter">{analyzingHeroName}</h2>
-                          <span className="px-2 py-0.5 bg-tft-accent text-black text-[10px] font-black rounded uppercase tracking-widest">
+                          <h2 className="text-3xl font-black italic uppercase tracking-tighter text-gray-800">{analyzingHeroName}</h2>
+                          <span className="px-2 py-0.5 bg-tft-accent text-white text-[10px] font-black rounded uppercase tracking-widest">
                             {analysisResult.role}
                           </span>
                         </div>
@@ -995,8 +997,8 @@ export default function App() {
                               />
                             </div>
                             <div className="flex-1">
-                              <h3 className="text-lg font-bold text-white group-hover:text-tft-accent transition-colors mb-1">{item.name}</h3>
-                              <p className="text-xs text-gray-400 leading-relaxed">{item.reason}</p>
+                              <h3 className="text-lg font-bold text-gray-800 group-hover:text-tft-accent transition-colors mb-1">{item.name}</h3>
+                              <p className="text-xs text-gray-500 leading-relaxed">{item.reason}</p>
                             </div>
                           </motion.div>
                         ))}
@@ -1015,7 +1017,7 @@ export default function App() {
         <button
           onClick={handleFetchRecommendation}
           disabled={loading}
-          className="w-full bg-tft-accent active:scale-95 disabled:bg-gray-700 text-black font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-[0_10px_40px_rgba(200,155,60,0.4)] uppercase italic"
+          className="w-full bg-tft-accent active:scale-95 disabled:bg-gray-700 text-white font-black py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-[0_10px_40px_rgba(104,143,78,0.3)] uppercase italic"
         >
           {loading ? <RefreshCw className="animate-spin" /> : <>即刻生成 AI 战术方案 <ChevronRight size={20} /></>}
         </button>
